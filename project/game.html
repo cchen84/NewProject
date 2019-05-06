@@ -6,6 +6,7 @@
     background: #ff0000;
     width:20px;
     height:20px;
+    position:absolute;
     }</style>
     
 </head>
@@ -17,12 +18,70 @@
     ah.x = 250;
     ah.y = 450;
     
+    var LEFT = 37;
+    var RIGHT = 39;
+    var UP = 38;
+    var DOWN = 40;
+    var lastRun = 0;
+    var move = 5;
+    
+    var controller = new Object();
+    
+    function keyControl(keyCode, pressed){
+        if(keyCode == LEFT){
+            controller.left = pressed;
+        }
+        if(keyCode == RIGHT){
+            controller.right = pressed;
+        }
+        if(keyCode == UP){
+            controller.up = pressed;
+        }
+        if(keyCode == DOWN){
+            controller.down = pressed;
+        }
+    }
+    
     function setup(sprite){
         var a = document.getElementById(sprite.element);
         a.style.left = sprite.x + "px"
         a.style.top = sprite.y + "px"
-    }//
-    setup(ah);
+    }
+    
+    function Controls(){
+        if(controller.left){
+            ah.x -= move;
+        }
+        if(controller.right){
+            ah.x += move;
+        }
+        if(controller.up){
+            ah.y -= move;
+        }if(controller.down){
+            ah.y += move;
+        }
+    }
+    function showUp(){
+        setup(ah);
+        
+    }
+    function loop(){
+        if (new Date().getTime()-lastRun>40){
+            Controls();
+            showUp();
+            lastRun = new Date().getTime();
+        }
+        setTimeout("loop();",2)
+    }
+    document.onkeydown = function(a){
+        keyControl(a.keyCode,true);
+    };
+    document.onkeyup = function(a){
+        keyControl(a.keyCode,false);
+    };
+    
+    loop();
+    
 </script>
 </body>
 </html>
