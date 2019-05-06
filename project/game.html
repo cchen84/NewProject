@@ -13,10 +13,16 @@
 <div id = "ah"></div>
 <script>
     var ah = new Object();
+    ah.element = "ah";
+    ah.x = 250;
+    ah.y = 450;
+    
     function setup(sprite){
         var a = document.getElementById(sprite.element);
-        
+        a.style.left = sprite.x + "px"
+        a.style.top = sprite.y + "px"
     }
+    setup(ah);
 </script>
 </body>
 </html>
