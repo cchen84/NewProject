@@ -7,80 +7,140 @@
     width:20px;
     height:20px;
     position:absolute;
-    }</style>
+    }
+        #background{
+            background:#000000;
+            width:800px;
+            height:700px;
+            position: absolute;
+            left:0px;
+            top:0px;
+        }
+        #bullet{
+            background: #00ff00;
+            width:5px;
+            height:5px;
+            position: absolute;
+        }
+    </style>
     
 </head>
-<body>
+<div id = "background"></div>
 <div id = "ah"></div>
+<div id = "bullet"></div>
 <script>
-    var ah = new Object();
-    ah.element = "ah";
-    ah.x = 250;
-    ah.y = 450;
+    
     
     var LEFT = 37;
     var RIGHT = 39;
     var UP = 38;
     var DOWN = 40;
     var lastRun = 0;
-    var move = 5;
+    var move = 10;
+    var SPACE = 32;
     
     var controller = new Object();
     
-    function keyControl(keyCode, pressed){
-        if(keyCode == LEFT){
+    function createSprite(element, x,y,width,height) {
+        var result = new Object();
+        result.element = element;
+        result.x = x;
+        result.y = y;
+        result.width = width;
+        result.height = height;
+        return result;
+    }
+    function keyControl(keyCode, pressed) {
+        if (keyCode == LEFT) {
             controller.left = pressed;
         }
-        if(keyCode == RIGHT){
+        if (keyCode == RIGHT) {
             controller.right = pressed;
         }
-        if(keyCode == UP){
+        if (keyCode == UP) {
             controller.up = pressed;
         }
-        if(keyCode == DOWN){
+        if (keyCode == DOWN) {
             controller.down = pressed;
         }
-    }
-    
-    function setup(sprite){
-        var a = document.getElementById(sprite.element);
-        a.style.left = sprite.x + "px"
-        a.style.top = sprite.y + "px"
-    }
-    
-    function Controls(){
-        if(controller.left){
-            ah.x -= move;
-        }
-        if(controller.right){
-            ah.x += move;
-        }
-        if(controller.up){
-            ah.y -= move;
-        }if(controller.down){
-            ah.y += move;
+        if (keyCode == SPACE) {
+            controller.space = pressed;
+
         }
     }
-    function showUp(){
-        setup(ah);
+        function boundary(sprite) {
+            if (sprite.x < 20) {
+                sprite.x = 20;
+            }
+            if (sprite.y < 20) {
+                sprite.y = 20;
+            }
+            if (sprite.x + sprite.width > 800) {
+                sprite.x = 800 - sprite.width;
+            }
+            if (sprite.y + sprite.height > 700) {
+                sprite.y = 700 - sprite.height;
+            }
+        }
+
+        function setup(sprite) {
+            var a = document.getElementById(sprite.element);
+            a.style.left = sprite.x + "px"
+            a.style.top = sprite.y + "px"
+        }
+
+        function Controls() {
+            if (controller.left) {
+                ah.x -= move;
+            }
+            if (controller.right) {
+                ah.x += move;
+            }
+            if (controller.up) {
+                ah.y -= move;
+            }
+            if (controller.down) {
+                ah.y += move;
+            }
+            if (controller.space && bullet.y <= -120) {
+                bullet.x = ah.x + 9;
+                bullet.y = ah.y - bullet.height;
+            }
+           
+            boundary(ah)
+        }
+
+        function showUp() {
+            setup(ah);
+            setup(bullet);
+
+        }
         
-    }
-    function loop(){
-        if (new Date().getTime()-lastRun>40){
-            Controls();
-            showUp();
-            lastRun = new Date().getTime();
+        function updatePosition(){
+            bullet.y -= 12;
+        
         }
-        setTimeout("loop();",2)
-    }
-    document.onkeydown = function(a){
-        keyControl(a.keyCode,true);
-    };
-    document.onkeyup = function(a){
-        keyControl(a.keyCode,false);
-    };
-    
-    loop();
+
+        function loop() {
+            if (new Date().getTime() - lastRun > 40) {
+                updatePosition();
+                Controls();
+                showUp();
+                lastRun = new Date().getTime();
+            }
+            setTimeout("loop();", 2)
+        }
+
+        document.onkeydown = function (a) {
+            keyControl(a.keyCode, true);
+        };
+        document.onkeyup = function (a) {
+            keyControl(a.keyCode, false);
+        };
+        var ah = createSprite("ah", 250, 450, 20, 20);
+        var bullet = createSprite("bullet", 0, -120, 2, 50);
+
+        loop();
     
 </script>
 </body>
